@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/logo.svg" alt="enterprise-jarvis-jev-scanner Logo" width="160" />
+</p>
+
 # Enterprise Jarvis & Jev Architecture Engine
 
 > Architectural conflict radar, System 1 triage scanner, and historical decision memory system.

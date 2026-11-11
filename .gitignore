@@ -3,3 +3,7 @@ __pycache__/
 .pytest_cache/
 *.sqlite
 .DS_Store
+
+!assets/logo.svg
+!assets/
+!assets/**
