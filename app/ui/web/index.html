@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SALESFORCE APEX SRE COPILOT // PLATFORM OBSERVABILITY</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="hud-body">
+  <!-- Subtle ambient canvas -->
+  <div class="hud-scanline" style="display: none;"></div>
+  <div class="hud-grid-background"></div>
+
+  <!-- MAIN HUD WRAPPER -->
+  <div class="hud-container">
+
+    <!-- TOP HEADER -->
+    <header class="hud-header glass-panel">
+      <!-- Left Wing: Enterprise Branding & Telemetry -->
+      <div class="header-wing header-left">
+        <div class="brand-cluster">
+          <div class="brand-emblem">
+            <div class="emblem-ring"></div>
+            <div class="emblem-dot"></div>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-title">APEX PLATFORM COPILOT</h1>
+            <span class="brand-subtitle">ENTERPRISE SRE • MULTI-CLOUD OBSERVABILITY • J.A.R.V.I.S. ENGINE</span>
+          </div>
+        </div>
+        <div class="telemetry-chips">
+          <div class="chip chip-online">
+            <span class="pulsing-dot dot-green"></span>
+            <span>SYSTEM ONLINE</span>
+          </div>
+          <div class="chip chip-hotkey" title="Global Hotkey toggle">
+            <span class="chip-label">HOTKEY</span>
+            <span class="chip-val">Alt + J</span>
+          </div>
+          <div class="chip chip-provider" id="daemon-status-chip">
+            <span class="chip-label">JEV S1</span>
+            <span class="chip-val">READY</span>
+          </div>
+          <div class="chip chip-trust" id="trust-pod-header-chip" title="Salesforce Trust Pod Status">
+            <span class="pulsing-dot dot-green"></span>
+            <span class="chip-label">POD</span>
+            <span class="chip-val" id="header-pod-val">NA214 // AVAILABLE</span>
+          </div>
+          <div class="chip chip-ai" id="ai-engine-chip" title="Configure AI Provider & Anthropic API Key">
+            <span class="pulsing-dot dot-indigo"></span>
+            <span class="chip-label">AI:</span>
+            <span class="chip-val" id="ai-engine-name">CLAUDE 3.5 SONNET</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: Platform Health Dial -->
+      <div class="header-center">
+        <div class="arc-reactor-wrapper" id="arc-reactor-container" title="System Reliability SLO">
+          <canvas id="arc-reactor-canvas" width="72" height="72"></canvas>
+          <div class="arc-glow-aura"></div>
+          <div class="reactor-readout">
+            <span class="reactor-status">PLATFORM SLO</span>
+            <span class="reactor-watts" id="reactor-power-label">99.98% // NOMINAL</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Wing: Telemetry, Briefing & Controls -->
+      <div class="header-wing header-right">
+        <div class="time-cluster">
+          <div class="clock-display" id="hud-clock">00:00:00</div>
+          <div class="date-display" id="hud-date">OCTOBER 02, 2026</div>
+        </div>
+        <div class="action-buttons">
+          <button class="hud-btn hud-btn-audio" id="audio-toggle-btn" title="Toggle Voice Briefing">
+            <span class="btn-icon">🔊</span>
+            <span class="btn-text">AUDIO ON</span>
+          </button>
+          <button class="hud-btn hud-btn-briefing" id="trigger-briefing-btn" title="Generate Executive Morning Briefing">
+            <span class="btn-icon">⚡</span>
+            <span class="btn-text">BRIEFING</span>
+          </button>
+          <button class="hud-btn hud-btn-config" id="open-ai-config-btn" title="Configure AI Provider & Anthropic Keys">
+            <span class="btn-icon">⚙️</span>
+            <span class="btn-text">AI KEYS</span>
+          </button>
+          <button class="hud-btn hud-btn-refresh" id="refresh-all-btn" title="Refresh Live Feeds">
+            <span class="btn-icon">🔄</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- MISSION CONTROL FLIGHT GAUGES BAR -->
+    <section class="flight-gauges-bar glass-panel" id="flight-gauges-bar">
+      <div class="flight-gauges-grid">
+
+        <!-- Gauge 1: Data Storage -->
+        <div class="flight-gauge-tile" id="gauge-data-storage" title="Salesforce Production Data Storage">
+          <div class="gauge-top">
+            <span class="gauge-label">DATA STORAGE</span>
+            <span class="gauge-badge badge-normal" id="data-storage-badge">78.4%</span>
+          </div>
+          <div class="gauge-val" id="data-storage-val">3.92 GB / 5.0 GB</div>
+          <div class="gauge-meter-track">
+            <div class="gauge-meter-fill fill-cyan" id="data-storage-fill" style="width: 78.4%;"></div>
+          </div>
+          <div class="gauge-sub">Limit: 5,000 MB (Enterprise DB)</div>
+        </div>
+
+        <!-- Gauge 2: File Storage -->
+        <div class="flight-gauge-tile" id="gauge-file-storage" title="Salesforce Production File Storage">
+          <div class="gauge-top">
+            <span class="gauge-label">FILE STORAGE</span>
+            <span class="gauge-badge badge-optimal" id="file-storage-badge">42.1%</span>
+          </div>
+          <div class="gauge-val" id="file-storage-val">4.21 GB / 10.0 GB</div>
+          <div class="gauge-meter-track">
+            <div class="gauge-meter-fill fill-teal" id="file-storage-fill" style="width: 42.1%;"></div>
+          </div>
+          <div class="gauge-sub">Limit: 10,000 MB (Clinical Attachments)</div>
+        </div>
+
+        <!-- Gauge 3: Daily API Gas Tank -->
+        <div class="flight-gauge-tile gauge-gas-tank" id="gauge-daily-api" title="Daily API Requests Gas Tank (Roll over for attribution)">
+          <div class="gauge-top">
+            <span class="gauge-label">DAILY API GAS TANK</span>
+            <span class="gauge-badge badge-normal" id="api-usage-badge">25.9%</span>
+          </div>
+          <div class="gauge-val text-cyan" id="api-usage-val">93,493 / 361,000</div>
+          <div class="gauge-meter-track">
+            <div class="gauge-meter-fill fill-cyan" id="api-usage-fill" style="width: 25.9%;"></div>
+          </div>
+          <div class="gauge-sub" id="api-attribution-summary">MuleSoft: 48% • CareCloud: 30% • Snowflake: 15%</div>
+        </div>
+
+        <!-- Gauge 4: Outbound SingleEmail -->
+        <div class="flight-gauge-tile" id="gauge-single-email" title="Outbound SingleEmail Daily Governor Meter">
+          <div class="gauge-top">
+            <span class="gauge-label">OUTBOUND SINGLE EMAIL</span>
+            <span class="gauge-badge badge-optimal" id="email-usage-badge">9.6%</span>
+          </div>
+          <div class="gauge-val text-teal" id="email-usage-val">482 / 5,000</div>
+          <div class="gauge-meter-track">
+            <div class="gauge-meter-fill fill-teal" id="email-usage-fill" style="width: 9.6%;"></div>
+          </div>
+          <div class="gauge-sub">Headroom: 4,518 emails remaining</div>
+        </div>
+
+        <!-- Gauge 5: Code Coverage -->
+        <div class="flight-gauge-tile" id="gauge-code-coverage" title="Apex Org Test Code Coverage (Min 75% required)">
+          <div class="gauge-top">
+            <span class="gauge-label">CODE COVERAGE</span>
+            <span class="gauge-badge badge-normal" id="coverage-badge">78.4%</span>
+          </div>
+          <div class="gauge-val text-green" id="coverage-val">78.4% (PASS)</div>
+          <div class="gauge-meter-track">
+            <div class="gauge-meter-fill fill-green" id="coverage-fill" style="width: 78.4%;"></div>
+          </div>
+          <div class="gauge-sub">Quality Gate: >= 75.0% enforced</div>
+        </div>
+
+        <!-- Gauge 6: Active AuthSession Users -->
+        <div class="flight-gauge-tile" id="gauge-active-users" title="Active AuthSession Sessions">
+          <div class="gauge-top">
+            <span class="gauge-label">ACTIVE AUTHSESSIONS</span>
+            <span class="gauge-badge badge-cyan" id="users-badge">42 SESSIONS</span>
+          </div>
+          <div class="gauge-val text-cyan" id="users-val">42 Active Users</div>
+          <div class="gauge-sub-pill-row">
+            <span class="mini-pill">28 UI</span>
+            <span class="mini-pill">12 API</span>
+            <span class="mini-pill">2 OAuth</span>
+          </div>
+          <div class="gauge-sub">Audited: Security nominal</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- COCKPIT NAVIGATION TAB BAR -->
+    <nav class="cockpit-nav-bar">
+      <div class="nav-tabs">
+        <button class="nav-tab-btn nav-tab-ai" data-tab="tab-copilot" id="nav-btn-copilot">
+          <span class="tab-num">[AI]</span>
+          <span class="tab-icon">🤖</span>
+          <span class="tab-title">AUTONOMOUS SRE COPILOT</span>
+          <span class="tab-alert-pill pill-cyan" id="ai-active-pill">ACTIVE CORE</span>
+        </button>
+        <button class="nav-tab-btn active" data-tab="tab-overview" id="nav-btn-overview">
+          <span class="tab-num">[1]</span>
+          <span class="tab-icon">⚡</span>
+          <span class="tab-title">MISSION FLIGHT DECK</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-schedulers" id="nav-btn-schedulers">
+          <span class="tab-num">[2]</span>
+          <span class="tab-icon">⏱️</span>
+          <span class="tab-title">SCHEDULERS & BATCH TRACE</span>
+          <span class="tab-alert-pill" id="schedulers-alert-pill" style="display: inline-block;">1 MISSED</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-deployments" id="nav-btn-deployments">
+          <span class="tab-num">[3]</span>
+          <span class="tab-icon">🚀</span>
+          <span class="tab-title">DEPLOYMENTS & PROD AUDIT</span>
+          <span class="tab-alert-pill pill-amber" id="audit-alert-pill" style="display: inline-block;">2 PROD EDITS</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-integrations" id="nav-btn-integrations">
+          <span class="tab-num">[4]</span>
+          <span class="tab-icon">🌐</span>
+          <span class="tab-title">INTEGRATIONS & GOVERNANCE</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-triage" id="nav-btn-triage">
+          <span class="tab-num">[5]</span>
+          <span class="tab-icon">🔬</span>
+          <span class="tab-title">QUICK TRIAGE & RADAR</span>
+        </button>
+      </div>
+      <div class="nav-controls">
+        <span class="nav-hotkey-hint">Keys 0-5 to switch tabs</span>
+      </div>
+    </nav>
+
+    <!-- MAIN DASHBOARD CONTENT (TAB PANELS) -->
+    <main class="hud-main">
+
+      <!-- ===================================================================
+           TAB AI: AUTONOMOUS SRE COPILOT & INCIDENT INVESTIGATOR
+           =================================================================== -->
+      <div class="tab-content-panel" id="tab-copilot">
+
+        <!-- INCIDENT STATUS BANNER -->
+        <section class="ai-incident-banner glass-panel">
+          <div class="banner-left">
+            <div class="banner-badge badge-critical">ACTIVE PRODUCTION INCIDENT</div>
+            <div class="banner-title-group">
+              <h2 id="ai-incident-title">INC-8924: System.LimitException: Apex CPU time limit exceeded</h2>
+              <span class="banner-sub" id="ai-incident-meta">Component: YesterdayDenialSyncBatch (Chunk 8 of 24) • Org: Alliance Prod (00Df2000001HEGJEA4) • Impact: 1,704 Horizon BCBS Denials</span>
+            </div>
+          </div>
+          <div class="banner-actions">
+            <button class="hud-btn hud-btn-scan" id="run-ai-investigate-btn">
+              <span class="btn-icon">⚡</span>
+              <span>RUN AI ROOT CAUSE ANALYSIS</span>
+            </button>
+            <button class="hud-btn hud-btn-briefing" id="run-ai-verify-btn">
+              <span class="btn-icon">🧪</span>
+              <span>VERIFY IN SANDBOX</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- SPLIT WORKSPACE: TWO COLUMNS -->
+        <div class="hud-dual-columns">
+
+          <!-- COLUMN LEFT: ROOT CAUSE ANALYSIS & SYNTHESIZED GIT DIFF -->
+          <div class="hud-col hud-col-left">
+
+            <!-- WIDGET 1: CAUSAL ROOT CAUSE ANALYSIS -->
+            <section class="hud-widget glass-panel">
+              <div class="widget-header">
+                <div class="widget-title">
+                  <span class="widget-icon">🔍</span>
+                  <h3>CAUSAL ROOT CAUSE ANALYSIS</h3>
+                </div>
+                <div class="widget-badge badge-optimal" id="ai-confidence-badge">98.0% CONFIDENCE</div>
+              </div>
+
+              <div class="ai-diagnosis-content" id="ai-diagnosis-box">
+                <div class="diagnosis-block">
+                  <div class="block-label">ROOT CAUSE SYNTHESIS</div>
+                  <div class="block-text" id="ai-root-cause-text">
+                    Quadratic lookup iteration on unindexed Denial_Lines__c parent relationship during secondary insurance calculation, exacerbated by a 214% denial volume surge from Horizon BCBS.
+                  </div>
+                </div>
+
+                <div class="diagnosis-block">
+                  <div class="block-label">CAUSAL TIMELINE CHAIN</div>
+                  <ul class="causal-chain-list" id="ai-causal-chain-list">
+                    <li><span class="step-num">1</span> MuleSoft ingestion pipeline loaded 1,704 new denial lines from Horizon BCBS at 02:15 UTC.</li>
+                    <li><span class="step-num">2</span> YesterdayDenialSyncBatch executed with chunk scope size = 200 records.</li>
+                    <li><span class="step-num">3</span> Nested loop in execute() queried related Accounts without checking empty Set collections, tripping the 10,000ms CPU timeout on chunk 8.</li>
+                  </ul>
+                </div>
+
+                <div class="diagnosis-impact-row">
+                  <div class="impact-item">
+                    <span class="impact-label">BUSINESS EXPOSURE:</span>
+                    <span class="impact-val text-amber" id="ai-business-impact">$17.1M Horizon BCBS denials at risk; daily reconciliation delayed.</span>
+                  </div>
+                  <div class="impact-item">
+                    <span class="impact-label">RECOMMENDATION:</span>
+                    <span class="impact-val text-teal" id="ai-recommended-action">Apply bulkified map filter and reduce batch chunk size to 80.</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- WIDGET 2: SYNTHESIZED GIT DIFF PATCH -->
+            <section class="hud-widget glass-panel">
+              <div class="widget-header">
+                <div class="widget-title">
+                  <span class="widget-icon">🩹</span>
+                  <h3>AUTONOMOUS GIT DIFF PATCH (YesterdayDenialSyncBatch.cls)</h3>
+                </div>
+                <div class="header-action-links">
+                  <button class="mini-action-btn" id="copy-diff-btn">📋 COPY DIFF</button>
+                  <button class="mini-action-btn btn-primary" id="apply-scratch-btn">🚀 TEST IN SCRATCH ORG</button>
+                </div>
+              </div>
+
+              <div class="code-diff-container">
+                <pre class="git-diff-pre" id="ai-git-diff-content"><code>--- a/force-app/main/default/classes/YesterdayDenialSyncBatch.cls
++++ b/force-app/main/default/classes/YesterdayDenialSyncBatch.cls
+@@ -62,8 +62,11 @@ public class YesterdayDenialSyncBatch implements Database.Batchable&lt;sObject&gt; {
+         Set&lt;Id&gt; accountIds = new Set&lt;Id&gt;();
+         for (Denial_Lines__c dl : scope) {
+             accountIds.add(dl.Patient_Account__c);
+         }
+-        // FIX: Bulkify map query with indexed filter to prevent quadratic CPU timeout
+-        Map&lt;Id, Account&gt; accMap = new Map&lt;Id, Account&gt;([
+-            SELECT Id, High_Balance_Hold__c, Outstanding_AR__c 
+-            FROM Account WHERE Id IN :accountIds
++        Map&lt;Id, Account&gt; accMap = new Map&lt;Id, Account&gt;();
++        if (!accountIds.isEmpty()) {
++            accMap = new Map&lt;Id, Account&gt;([
++                SELECT Id, High_Balance_Hold__c, Outstanding_AR__c 
++                FROM Account WHERE Id IN :accountIds AND IsDeleted = false
++            ]);
+         ]);</code></pre>
+              </div>
+
+              <!-- SANDBOX VERIFICATION SCRIPT -->
+              <div class="verification-script-box">
+                <div class="verif-header">
+                  <span class="verif-label">SANDBOX ANONYMOUS APEX VERIFICATION SCRIPT</span>
+                  <button class="mini-action-btn" id="copy-verif-btn">📋 COPY APEX</button>
+                </div>
+                <pre class="apex-script-pre" id="ai-verif-script"><code>Test.startTest();
+YesterdayDenialSyncBatch batch = new YesterdayDenialSyncBatch();
+Database.executeBatch(batch, 80); // Scaled chunk size
+Test.stopTest();
+System.assert([SELECT count() FROM AsyncApexJob WHERE Status = 'Failed'] == 0, 'Batch must complete cleanly');</code></pre>
+              </div>
+            </section>
+
+          </div>
+
+          <!-- COLUMN RIGHT: PREDICTIVE SHADOW SIMULATOR & INTERACTIVE COPILOT -->
+          <div class="hud-col hud-col-right">
+
+            <!-- WIDGET 3: PREDICTIVE SHADOW SIMULATOR -->
+            <section class="hud-widget glass-panel">
+              <div class="widget-header">
+                <div class="widget-title">
+                  <span class="widget-icon">🔮</span>
+                  <h3>PREDICTIVE SHADOW SIMULATOR (TONIGHT'S 02:00 AM BATCH RUN)</h3>
+                </div>
+                <div class="widget-badge badge-warning" id="sim-risk-badge">ELEVATED (48% PROBABILITY)</div>
+              </div>
+
+              <div class="sim-content-box">
+                <div class="sim-control-row">
+                  <div class="sim-input-group">
+                    <label for="sim-volume-input">Simulated Ingest Volume (Horizon BCBS Denials):</label>
+                    <div class="sim-input-stepper">
+                      <input type="number" id="sim-volume-input" value="1704" min="100" max="10000" step="100">
+                      <span class="sim-unit">records</span>
+                    </div>
+                  </div>
+                  <button class="hud-btn hud-btn-scan" id="sim-recalc-btn">
+                    <span>RECALCULATE PROJECTION</span>
+                  </button>
+                </div>
+
+                <!-- CPU Limit Projection Gauge -->
+                <div class="sim-gauge-block">
+                  <div class="sim-gauge-labels">
+                    <span>PROJECTED CPU TIME:</span>
+                    <span class="text-amber" id="sim-cpu-val">9,201 ms / 10,000 ms</span>
+                  </div>
+                  <div class="sim-track">
+                    <div class="sim-fill fill-amber" id="sim-cpu-fill" style="width: 92%;"></div>
+                    <div class="sim-threshold-marker" title="10,000 ms Synchronous Governor Limit"></div>
+                  </div>
+                  <div class="sim-sub-readout" id="sim-analysis-text">
+                    Incoming denial volume (1,704 records) exceeds standard moving average by 214%. At chunk size 200, secondary insurance joins will consume 9,201ms CPU time (92% of governor limit).
+                  </div>
+                </div>
+
+                <div class="sim-recommendation-card">
+                  <div class="rec-title">AI ARCHITECTURAL ACTION:</div>
+                  <div class="rec-body" id="sim-rec-body">
+                    Automatically reduce batch scope chunk size from <strong>200 records</strong> to <strong>80 records</strong> in CronTrigger configuration before the 02:00 AM scheduled execution.
+                  </div>
+                  <button class="mini-action-btn btn-primary" id="apply-chunk-btn">APPLY CHUNK SIZE = 80 TO SCHEDULER</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- WIDGET 4: INTERACTIVE ENGINEERING COPILOT TERMINAL -->
+            <section class="hud-widget glass-panel">
+              <div class="widget-header">
+                <div class="widget-title">
+                  <span class="widget-icon">💬</span>
+                  <h3>ENGINEERING CO-PILOT WORKSPACE</h3>
+                </div>
+                <div class="widget-badge badge-cyan">LIVE SFDC CONTEXT</div>
+              </div>
+
+              <!-- Quick Prompt Suggestion Chips -->
+              <div class="copilot-chips-row">
+                <button class="prompt-chip" data-prompt="Diagnose Horizon BCBS denial spike">📉 Denial Spike</button>
+                <button class="prompt-chip" data-prompt="Draft Anonymous Apex to reassign 18 unrouted encounters">🔀 Reassign 18 Encounters</button>
+                <button class="prompt-chip" data-prompt="Explain Row Lock Contention on Patient_Billing_Group__c">🔒 Lock Contention</button>
+              </div>
+
+              <!-- Chat History Container -->
+              <div class="copilot-chat-history" id="copilot-chat-history">
+                <div class="chat-message msg-ai">
+                  <div class="chat-sender">CLAUDE 3.5 SONNET • SRE COPILOT</div>
+                  <div class="chat-text">
+                    Production telemetry is nominal with 2 active advisories: YesterdayDenialSyncBatch experienced CPU limit contention on chunk 8, and 17 unrouted clinical encounters are queued for Toms River clinic. How can I assist you?
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chat Input Bar -->
+              <div class="copilot-input-bar">
+                <input type="text" class="copilot-input" id="copilot-input" placeholder="Ask Salesforce SRE Copilot (e.g., 'Draft SOQL to find unlinked encounters')...">
+                <button class="copilot-send-btn" id="copilot-send-btn">
+                  <span>SEND</span>
+                </button>
+              </div>
+            </section>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ===================================================================
+           TAB 1: MISSION FLIGHT DECK (Overview)
+           =================================================================== -->
+      <div class="tab-content-panel active" id="tab-overview">
+
+        <!-- REAL-TIME AI INCIDENT HIGHLIGHT BANNER -->
+        <div class="ai-overview-alert-banner" id="overview-ai-banner" onclick="switchTab('tab-copilot')">
+          <div class="alert-left">
+            <span class="pulsing-dot dot-amber"></span>
+            <strong>AI ADVISORY:</strong>
+            <span>YesterdayDenialSyncBatch failed on chunk 8 (CPU limit). Claude 3.5 Sonnet has generated a causal RCA & git diff patch.</span>
+          </div>
+          <span class="banner-action-link">VIEW AI DIAGNOSIS & PATCH →</span>
+        </div>
+
+        <!-- SECTION 1: LIVE ORG STATUS GRID -->
+        <section class="hud-section section-orgs">
+          <div class="section-title-bar">
+            <div class="title-with-bracket">
+              <span class="bracket">[</span>
+              <h2>LIVE ORG STATUS GRID</h2>
+              <span class="bracket">]</span>
+            </div>
+            <div class="section-meta">
+              <span class="meta-item">TARGET: HEALTHCARE MULTI-CLOUD</span>
+              <span class="meta-item" id="last-sync-time">SYNCED: 15:40:52 EST</span>
+            </div>
+          </div>
+
+          <div class="org-grid" id="org-grid-container">
+            <!-- Dynamic Org Cards injected via app.js -->
+            <div class="loading-placeholder">Initializing Multi-Cloud Org Telemetry...</div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: OPERATIONAL CENTER (TWO COLUMNS) -->
+        <div class="hud-dual-columns">
+
+          <!-- COLUMN LEFT: ACTIVE BATCHES & HEALTHCARE RCM -->
+          <div class="hud-col hud-col-left">
+
+            <!-- WIDGET: ACTIVE BATCHES -->
+            <section class="hud-widget glass-panel">
+              <div class="widget-header">
+                <div class="widget-title">
+                  <span class="widget-icon">⚙️</span>
+                  <h3>ACTIVE BATCH MONITOR</h3>
+                </div>
+                <div class="widget-badge" id="batch-count-badge">3 RUNNING • 2 ERRORS</div>
+              </div>
+
+              <div class="batches-container" id="batches-list">
+                <!-- Rendered via app.js -->
+                <div class="loading-placeholder">Connecting to Salesforce Apex FlexQueue...</div>
+              </div>
+            </section>
+
+            <!-- WIDGET: HEALTHCARE RCM STATS -->
+            <section class="hud-widget glass-panel">
+              <div class="widget-header">
+                <div class="widget-title">
+                  <span class="widget-icon">🏥</span>
+                  <h3>HEALTHCARE RCM TELEMETRY</h3>
+                </div>
+                <div class="widget-badge badge-alert" id="rcm-status-badge">REVENUE CYCLE RISK: MANAGED</div>
+              </div>
+
+              <!-- Key Metric Tiles -->
+              <div class="rcm-stats-grid">
+                <div class="rcm-stat-tile" title="Total active billing denials requiring remediation">
+                  <div class="stat-top">
+                    <span class="stat-label">DENIALS VOLUME</span>
+                    <span class="stat-trend trend-down">↓ 12.4%</span>
+                  </div>
+                  <div class="stat-value text-amber" id="rcm-denials-vol">$142,500</div>
+                  <div class="stat-subtext" id="rcm-denials-count">38 claims under review</div>
+                </div>
+
+                <div class="rcm-stat-tile" title="Encounters awaiting provider discipline signoff">
+                  <div class="stat-top">
+                    <span class="stat-label">UNROUTED ENCOUNTERS</span>
+                    <span class="stat-trend trend-up">⚠ 17 Ready</span>
+                  </div>
+                  <div class="stat-value text-cyan" id="rcm-unrouted-count">17</div>
+                  <div class="stat-subtext">Awaiting PT/OT signoff</div>
+                </div>
+
+                <div class="rcm-stat-tile" title="Flowsheets quarantined in Provider Review">
+                  <div class="stat-top">
+                    <span class="stat-label">FLOWSHEET QUEUE</span>
+                    <span class="stat-indicator dot-amber"></span>
+                  </div>
+                  <div class="stat-value text-amber" id="rcm-flowsheet-queue">9</div>
+                  <div class="stat-subtext">Provider Review (LWC Quarantined)</div>
+                </div>
+
+                <div class="rcm-stat-tile" title="Clean Claim First-Pass Rate">
+                  <div class="stat-top">
+                    <span class="stat-label">CLEAN CLAIM RATE</span>
+                    <span class="stat-trend trend-ok">Target: 95%</span>
+                  </div>
+                  <div class="stat-value text-green" id="rcm-clean-rate">96.4%</div>
+                  <div class="stat-subtext">Above enterprise SLA</div>
+                </div>
+              </div>
+
+              <!-- Actionable Denials Strip -->
+              <div class="rcm-priority-strip">
+                <div class="strip-header">
+                  <span>ACTIONABLE CLINICAL DENIALS</span>
+                  <span class="strip-tag">CO-16 MODIFIER 59 DOMINANT</span>
+                </div>
+                <div class="strip-list" id="rcm-denials-list">
+                  <!-- Injected via app.js -->
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+          <!-- COLUMN RIGHT: QUICK STATUS SNAPSHOT & RADAR HEALTH -->
+          <div class="hud-col hud-col-right">
+
+            <!-- WIDGET: FLIGHT DECK SUMMARY -->
+            <section class="hud-widget glass-panel">
+              <div class="widget-header">
+                <div class="widget-title">
+                  <span class="widget-icon">📡</span>
+                  <h3>TELEMETRY OVERVIEW & RADAR GATE</h3>
+                </div>
+                <div class="widget-badge badge-jev">SYSTEM 1 ACTIVE</div>
+              </div>
+
+              <div class="overview-summary-box">
+                <div class="summary-hero-card">
+                  <div class="hero-left">
+                    <div class="hero-status-title">GOVERNANCE & TRUST STATUS</div>
+                    <div class="hero-status-sub">Alliance Production (00Df2000001HEGJEA4)</div>
+                  </div>
+                  <div class="hero-right">
+                    <span class="status-pill-large pill-nominal">GATE: NOMINAL</span>
+                  </div>
+                </div>
+
+                <div class="summary-key-metrics">
+                  <div class="metric-row">
+                    <span class="m-label">Trust API Pod Health:</span>
+                    <span class="m-val text-green" id="summary-pod-status">NA214 (Operational, 38ms)</span>
+                  </div>
+                  <div class="metric-row">
+                    <span class="m-label">Scheduled CronTriggers:</span>
+                    <span class="m-val text-cyan" id="summary-sched-count">6 Active (1 Late Warning)</span>
+                  </div>
+                  <div class="metric-row">
+                    <span class="m-label">Tooling API Deployment:</span>
+                    <span class="m-val text-cyan" id="summary-deploy-count">v4.12.3 (77.8% In-Flight)</span>
+                  </div>
+                  <div class="metric-row">
+                    <span class="m-label">Prod Audit Modifications:</span>
+                    <span class="m-val text-amber" id="summary-prod-edits">2 Direct Edits Outside Pipeline</span>
+                  </div>
+                  <div class="metric-row">
+                    <span class="m-label">Snowflake DW Sync Lag:</span>
+                    <span class="m-val text-green" id="summary-snowflake-lag">42s (RCM_STAGE In Sync)</span>
+                  </div>
+                  <div class="metric-row">
+                    <span class="m-label">Overall Code Coverage:</span>
+                    <span class="m-val text-green" id="summary-code-cov">78.4% (Threshold: 75%)</span>
+                  </div>
+                </div>
+
+                <div class="quick-nav-actions">
+                  <button class="hud-btn hud-btn-triage-jump" id="jump-to-schedulers-btn">
+                    <span>⏱️ View Schedulers & Batches</span>
+                  </button>
+                  <button class="hud-btn hud-btn-triage-jump" id="jump-to-deploy-btn">
+                    <span>🚀 View Deployments & Audit</span>
+                  </button>
+                  <button class="hud-btn hud-btn-triage-jump" id="jump-to-triage-btn">
+                    <span>⚡ Launch Code Triage Dropzone</span>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ===================================================================
+           TAB 2: REAL-TIME SCHEDULERS & BATCH TRACE
+           =================================================================== -->
+      <div class="tab-content-panel" id="tab-schedulers">
+        
+        <!-- Live CronTrigger Table -->
+        <section class="hud-widget glass-panel" id="schedulers-widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <span class="widget-icon">⏱️</span>
+              <h3>LIVE CRONTRIGGER SCHEDULE STATUS & COUNTDOWNS</h3>
+            </div>
+            <div class="widget-badge badge-alert" id="schedulers-badge">1 MISSED / LATE RUN</div>
+          </div>
+
+          <div class="schedulers-table-wrapper" id="schedulers-table-container">
+            <table class="schedulers-table" id="schedulers-table">
+              <thead>
+                <tr>
+                  <th>JOB NAME</th>
+                  <th>APEX CLASS</th>
+                  <th>CRON EXPRESSION</th>
+                  <th>STATE</th>
+                  <th>PREV FIRE TIME</th>
+                  <th>NEXT FIRE TIME</th>
+                  <th>COUNTDOWN</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="schedulers-table-body">
+                <!-- Rendered dynamically via app.js -->
+                <tr><td colspan="8" class="loading-placeholder">Querying live CronTriggers...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- BatchApexErrorEvent Instant Stack Trace Viewer -->
+        <section class="hud-widget glass-panel" id="batch-error-viewer">
+          <div class="widget-header">
+            <div class="widget-title">
+              <span class="widget-icon">🚨</span>
+              <h3>BATCHAPEXERROREVENT INSTANT STACK TRACE & RECORD ID VIEWER</h3>
+            </div>
+            <div class="widget-badge badge-crit" id="batch-error-count-badge">2 CHUNK FAILURES DETECTED</div>
+          </div>
+
+          <div class="batch-error-content" id="batch-error-content-list">
+            <!-- Rendered dynamically via app.js -->
+            <div class="loading-placeholder">Listening for BatchApexErrorEvent pub/sub messages...</div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ===================================================================
+           TAB 3: LIVE DEPLOYMENTS & PROD AUDIT PANEL
+           =================================================================== -->
+      <div class="tab-content-panel" id="tab-deployments">
+
+        <!-- Active Tooling API DeployRequest -->
+        <section class="hud-widget glass-panel" id="deploy-widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <span class="widget-icon">🚀</span>
+              <h3>TOOLING API DEPLOYREQUEST // ACTIVE DEPLOYMENT PROGRESS</h3>
+            </div>
+            <div class="widget-badge badge-normal" id="deploy-badge">IN-PROGRESS: 77.8%</div>
+          </div>
+
+          <div class="deploy-progress-container" id="deploy-progress-box">
+            <!-- Rendered dynamically via app.js -->
+            <div class="loading-placeholder">Querying Tooling API DeployRequest...</div>
+          </div>
+        </section>
+
+        <!-- Live SetupAuditTrail Prod Ticker -->
+        <section class="hud-widget glass-panel" id="setup-audit-widget">
+          <div class="widget-header">
+            <div class="widget-title">
+              <span class="widget-icon">🛡️</span>
+              <h3>SETUPAUDITTRAIL TICKER // DIRECT PROD MODIFICATIONS</h3>
+            </div>
+            <div class="widget-badge badge-alert" id="audit-badge">2 UNMANAGED EDITS DETECTED</div>
+          </div>
+
+          <div class="setup-audit-intro">
+            Continuous surveillance of changes made directly in Production outside of authorized CI/CD deployment windows.
+          </div>
+
+          <div class="setup-audit-ticker-list" id="setup-audit-ticker">
+            <!-- Rendered dynamically via app.js -->
+            <div class="loading-placeholder">Scanning SetupAuditTrail records...</div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ===================================================================
+           TAB 4: INTEGRATIONS & GOVERNANCE DASHBOARD
+           =================================================================== -->
+      <div class="tab-content-panel" id="tab-integrations">
+
+        <div class="integrations-dashboard-grid" id="integrations-dashboard">
+
+          <!-- Sub-widget: Bulk API 2.0 Monitor -->
+          <section class="hud-widget glass-panel">
+            <div class="widget-header">
+              <div class="widget-title">
+                <span class="widget-icon">📦</span>
+                <h3>BULK API 2.0 INGEST & QUERY JOBS</h3>
+              </div>
+              <div class="widget-badge badge-normal">PARALLEL CONCURRENCY</div>
+            </div>
+
+            <div class="bulk-api-list" id="bulk-api-jobs-list">
+              <!-- Rendered via app.js -->
+              <div class="loading-placeholder">Loading Bulk API 2.0 telemetry...</div>
+            </div>
+          </section>
+
+          <!-- Sub-widget: API Attribution by App & User -->
+          <section class="hud-widget glass-panel">
+            <div class="widget-header">
+              <div class="widget-title">
+                <span class="widget-icon">📊</span>
+                <h3>API CALL ATTRIBUTION BY CONNECTED APP & USER</h3>
+              </div>
+              <div class="widget-badge badge-cyan">93,493 CALLS TODAY</div>
+            </div>
+
+            <div class="api-attribution-container" id="api-attribution-breakdown">
+              <!-- Rendered via app.js -->
+              <div class="loading-placeholder">Aggregating Connected App limits...</div>
+            </div>
+          </section>
+
+          <!-- Sub-widget: Certificate & OAuth Expiration Countdown -->
+          <section class="hud-widget glass-panel">
+            <div class="widget-header">
+              <div class="widget-title">
+                <span class="widget-icon">🔐</span>
+                <h3>CERTIFICATE & OAUTH EXPIRATION TRACKER</h3>
+              </div>
+              <div class="widget-badge badge-alert">1 EXPIRING SOON</div>
+            </div>
+
+            <div class="cert-tracker-list" id="cert-tracker-list">
+              <!-- Rendered via app.js -->
+              <div class="loading-placeholder">Verifying mTLS & OAuth tokens...</div>
+            </div>
+          </section>
+
+          <!-- Sub-widget: Snowflake DW Reconciliation -->
+          <section class="hud-widget glass-panel">
+            <div class="widget-header">
+              <div class="widget-title">
+                <span class="widget-icon">❄️</span>
+                <h3>SALESFORCE ↔ SNOWFLAKE DW RECONCILIATION</h3>
+              </div>
+              <div class="widget-badge badge-optimal">SYNCED (42s LAG)</div>
+            </div>
+
+            <div class="snowflake-reconciliation-table" id="snowflake-recon-table">
+              <!-- Rendered via app.js -->
+              <div class="loading-placeholder">Comparing SystemModstamp offsets...</div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Governance Panel: Code Coverage, Sandbox Staleness, Null Probes -->
+        <section class="hud-widget glass-panel" id="governance-dashboard" style="margin-top: 20px;">
+          <div class="widget-header">
+            <div class="widget-title">
+              <span class="widget-icon">🏛️</span>
+              <h3>ENTERPRISE ARCHITECTURE GOVERNANCE & DATA QUALITY</h3>
+            </div>
+            <div class="widget-badge badge-normal">SLA PASS (78.4% COVERAGE)</div>
+          </div>
+
+          <div class="governance-grid">
+            
+            <!-- Code Coverage Deep Dive -->
+            <div class="gov-col">
+              <div class="gov-section-header">APEX TEST COVERAGE (< 75% WARNING)</div>
+              <div class="gov-coverage-box" id="gov-coverage-box">
+                <!-- Rendered via app.js -->
+              </div>
+            </div>
+
+            <!-- Sandbox Staleness -->
+            <div class="gov-col">
+              <div class="gov-section-header">SANDBOX STALENESS & DRIFT</div>
+              <div class="gov-sandboxes-box" id="gov-sandboxes-box">
+                <!-- Rendered via app.js -->
+              </div>
+            </div>
+
+            <!-- Data Quality Null Probes -->
+            <div class="gov-col">
+              <div class="gov-section-header">DATA QUALITY NULL-RATE PROBES</div>
+              <div class="gov-null-probes-box" id="gov-null-probes-box">
+                <!-- Rendered via app.js -->
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ===================================================================
+           TAB 5: QUICK CODE TRIAGE & ANTIGRAVITY MEMORY SEARCH
+           =================================================================== -->
+      <div class="tab-content-panel" id="tab-triage">
+
+        <div class="hud-dual-columns">
+
+          <!-- COLUMN LEFT: QUICK CODE TRIAGE DROPZONE -->
+          <div class="hud-col hud-col-left" style="flex: 1.2;">
+
+            <section class="hud-widget glass-panel widget-triage">
+              <div class="widget-header">
+                <div class="widget-title">
+                  <span class="widget-icon">⚡</span>
+                  <h3>QUICK TRIAGE CODE DROPZONE</h3>
+                </div>
+                <div class="widget-badge badge-jev">SYSTEM 1: JEV RADAR</div>
+              </div>
+
+              <div class="triage-intro">
+                Drop or paste Apex triggers, classes, or SOQL to run sub-15ms Jev triage and shift-left conflict detection.
+              </div>
+
+              <!-- Preset Samples Bar -->
+              <div class="samples-bar">
+                <span class="samples-label">LOAD PRESET:</span>
+                <button class="sample-btn" data-preset="recursion">Recursive Trigger</button>
+                <button class="sample-btn" data-preset="race">Flow & Trigger Race</button>
+                <button class="sample-btn" data-preset="gov_loop">SOQL In Loop</button>
+                <button class="sample-btn" data-preset="parent_lock">Row Lock Contention</button>
+                <button class="sample-btn" data-preset="clean">Clean Handler</button>
+              </div>
+
+              <!-- Dropzone Container -->
+              <div class="code-dropzone" id="code-dropzone-box">
+                <div class="dropzone-guide" id="dropzone-guide">
+                  <span class="drop-icon">📥</span>
+                  <span>DRAG & DROP APEX FILE HERE OR PASTE CODE BELOW</span>
+                </div>
+                <textarea 
+                  class="code-input" 
+                  id="triage-code-input" 
+                  placeholder="// Paste Apex Trigger, Class, or SOQL logic here..."
+                  spellcheck="false"
+                ></textarea>
+              </div>
+
+              <!-- Triage Actions -->
+              <div class="triage-actions">
+                <div class="triage-hotkey-hint">Shortcut: Ctrl + Enter to scan</div>
+                <div class="triage-btn-group">
+                  <button class="hud-btn hud-btn-clear" id="triage-clear-btn">CLEAR</button>
+                  <button class="hud-btn hud-btn-scan" id="triage-scan-btn">
+                    <span class="btn-icon">⚡</span>
+                    <span class="btn-text">SCAN WITH JEV RADAR</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Triage Diagnostic Results Container -->
+              <div class="triage-results-wrapper" id="triage-results-wrapper" style="display: none;">
+                <!-- Jev S1 Badges & Decision -->
+                <div class="jev-decision-bar" id="jev-decision-bar">
+                  <!-- Injected via app.js -->
+                </div>
+
+                <!-- Radar Conflict Cards -->
+                <div class="conflicts-output" id="conflicts-output">
+                  <!-- Injected via app.js -->
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+          <!-- COLUMN RIGHT: ANTIGRAVITY MEMORY SEARCH -->
+          <div class="hud-col hud-col-right" style="flex: 1;">
+
+            <section class="hud-widget glass-panel section-memory">
+              <div class="widget-header">
+                <div class="widget-title">
+                  <span class="widget-icon">🧠</span>
+                  <h3>ANTIGRAVITY MEMORY SEARCH (FTS5)</h3>
+                </div>
+                <div class="widget-badge badge-cyan">760+ CONVERSATIONS</div>
+              </div>
+
+              <!-- Search Bar with Shortcut -->
+              <div class="memory-search-bar">
+                <span class="search-icon">🔍</span>
+                <input 
+                  type="text" 
+                  id="memory-search-input" 
+                  class="memory-input" 
+                  placeholder="Search past RCAs, solutions, or components..."
+                  autocomplete="off"
+                />
+                <button class="hud-btn hud-btn-search" id="memory-search-btn">SEARCH</button>
+              </div>
+
+              <!-- Quick Tags -->
+              <div class="memory-tag-bar">
+                <span class="tag-title">QUICK QUERIES:</span>
+                <button class="memory-tag" data-query="Flowsheet Approval">Flowsheet</button>
+                <button class="memory-tag" data-query="AccountTrigger">AccountTrigger</button>
+                <button class="memory-tag" data-query="CareCloud Sync">CareCloud</button>
+                <button class="memory-tag" data-query="Modifier 59">Modifier 59</button>
+                <button class="memory-tag" data-query="Governor Limits">Governor</button>
+                <button class="memory-tag" data-query="Snowflake RCM_STAGE">Snowflake</button>
+              </div>
+
+              <!-- Memory Search Results Grid -->
+              <div class="memory-results-container" id="memory-results-container">
+                <div class="memory-empty-state">
+                  <span>Enter query above to search past engineering RCAs and debugging turns.</span>
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- HUD FOOTER -->
+    <footer class="hud-footer">
+      <div class="footer-left">
+        <span>PROJECT JARVIS // SPECIALIST DEVELOPER AGENT</span>
+        <span class="footer-sep">|</span>
+        <span>MISSION CONTROL FLIGHT DECK v2.0.0</span>
+      </div>
+      <div class="footer-center" id="footer-connection-status">
+        <span class="pulsing-dot dot-cyan"></span>
+        <span>DAEMON LINK: 127.0.0.1:8765 [ESTABLISHED]</span>
+      </div>
+      <div class="footer-right">
+        <span>GLOBAL HOTKEY: [ALT + J]</span>
+        <span class="footer-sep">|</span>
+        <span>SHIFT-LEFT CONFLICT RADAR</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- CINEMATIC MODAL: MORNING BRIEFING -->
+  <div class="hud-modal-overlay" id="briefing-modal-overlay">
+    <div class="briefing-modal glass-panel">
+      <div class="modal-corner corner-tl"></div>
+      <div class="modal-corner corner-tr"></div>
+      <div class="modal-corner corner-bl"></div>
+      <div class="modal-corner corner-br"></div>
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-brand">
+          <div class="mini-reactor-glyph"></div>
+          <div>
+            <h2 id="briefing-modal-title">J.A.R.V.I.S. STRATEGIC MORNING BRIEFING</h2>
+            <div class="briefing-date-subtitle" id="briefing-modal-subtitle">HEALTHCARE MULTI-CLOUD ECOSYSTEM TELEMETRY</div>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="briefing-close-btn">✕</button>
+      </div>
+
+      <!-- Soundwave Visualizer Banner -->
+      <div class="audio-wave-banner">
+        <div class="audio-wave-bars" id="audio-wave-bars">
+          <!-- 32 animated bars -->
+          <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span><span class="wave-bar"></span>
+          <span class="wave-bar"></span><span class="wave-bar"></span>
+        </div>
+        <div class="audio-status-pill" id="speech-status-pill">
+          <span class="pulsing-dot dot-cyan"></span>
+          <span id="speech-status-text">SYNTHESIZING JARVIS VOICE...</span>
+        </div>
+      </div>
+
+      <!-- Modal Body Content -->
+      <div class="modal-body" id="briefing-modal-body">
+        <!-- Injected via app.js -->
+        <div class="loading-placeholder">Synthesizing multi-cloud state and overnight telemetry...</div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <button class="hud-btn hud-btn-audio-replay" id="replay-speech-btn">
+            <span>🔊 REPLAY AUDIO</span>
+          </button>
+          <button class="hud-btn hud-btn-copy" id="copy-briefing-btn">
+            <span>📋 COPY BRIEFING</span>
+          </button>
+        </div>
+        <div class="modal-footer-right">
+          <button class="hud-btn hud-btn-scan" id="dismiss-briefing-btn">ACKNOWLEDGE & PROCEED</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE-OUT DRAWER: TRANSCRIPT DETAILS -->
+  <div class="hud-drawer-overlay" id="drawer-overlay"></div>
+  <aside class="hud-drawer glass-panel" id="transcript-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <span class="drawer-icon">📜</span>
+        <h3>HISTORICAL RCA DETAIL</h3>
+      </div>
+      <button class="drawer-close-btn" id="drawer-close-btn">✕</button>
+    </div>
+    <div class="drawer-body" id="drawer-content">
+      <!-- Injected via app.js -->
+    </div>
+  </aside>
+
+  <!-- MODAL: AI MODEL CONFIGURATION (ANTHROPIC / GEMINI) -->
+  <div class="hud-modal-overlay" id="ai-config-modal-overlay">
+    <div class="hud-modal glass-panel" style="max-width: 560px;">
+      <div class="modal-header">
+        <div class="modal-title-cluster">
+          <span class="modal-icon">⚙️</span>
+          <div>
+            <h2 class="modal-title">AI ENGINE CONFIGURATION</h2>
+            <span class="modal-subtitle">Configure Anthropic Claude 3.5 Sonnet & Gemini API credentials</span>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="close-ai-config-btn">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary);">
+            ANTHROPIC API KEY (Claude 3.5 Sonnet)
+          </label>
+          <input type="password" id="anthropic-key-input" class="form-input" placeholder="sk-ant-api03-..." style="width: 100%; padding: 10px 12px; background: #0b0f17; border: 1px solid var(--border-light); border-radius: 6px; color: #fff; font-family: var(--font-mono); font-size: 13px;">
+          <span style="display: block; font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+            Enables autonomous incident RCA, code patch generation, and live engineering co-pilot.
+          </span>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary);">
+            GEMINI API KEY (Optional Fallback)
+          </label>
+          <input type="password" id="gemini-key-input" class="form-input" placeholder="AIzaSy..." style="width: 100%; padding: 10px 12px; background: #0b0f17; border: 1px solid var(--border-light); border-radius: 6px; color: #fff; font-family: var(--font-mono); font-size: 13px;">
+        </div>
+        <div id="ai-config-status-msg" style="padding: 8px 12px; border-radius: 6px; font-size: 12px; display: none;"></div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button class="hud-btn" id="cancel-ai-config-btn" style="background: transparent;">CANCEL</button>
+        <button class="hud-btn hud-btn-scan" id="save-ai-config-btn">SAVE & CONNECT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script include -->
+  <script src="app.js"></script>
+</body>
+</html>

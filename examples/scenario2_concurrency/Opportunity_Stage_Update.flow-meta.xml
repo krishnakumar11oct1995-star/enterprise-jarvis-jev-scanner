@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Opportunity Stage Update</label>
+    <processType>AutoLaunched</processType>
+    <start>
+        <object>Opportunity</object>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <recordUpdates>
+        <inputAssignments>
+            <field>Discount_Rate__c</field>
+        </inputAssignments>
+    </recordUpdates>
+</Flow>

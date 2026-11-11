@@ -1,0 +1,313 @@
+{
+  "timestamp": 1792761653.565617,
+  "formatted_time": "2026-10-23 13:24:58",
+  "system_state": "WARNING",
+  "org_name": "Alliance Prod",
+  "username": "kkumar@aptimized.com.prod",
+  "connected": true,
+  "last_poll_time": 1792761653.565617,
+  "orgs": {
+    "alliance_prod": {
+      "alias": "Alliance Prod",
+      "status": "Connected",
+      "connected": true,
+      "username": "kkumar@aptimized.com.prod",
+      "instance_url": "https://allianceortho.my.salesforce.com",
+      "org_id": "00Df2000001HEGJEA4",
+      "is_sandbox": false,
+      "api_usage_percent": 27.4,
+      "error": null,
+      "async_apex_headroom_percent": 50.9
+    },
+    "team_md": {
+      "alias": "TeamMD",
+      "status": "Connected",
+      "connected": true,
+      "username": "mgunturu@aptimized.teammdprod",
+      "instance_url": "https://teammd.my.salesforce.com",
+      "org_id": "00DKj0000019ZyYMAU",
+      "is_sandbox": false,
+      "api_usage_percent": 2.3,
+      "error": null,
+      "async_apex_headroom_percent": 100.0
+    },
+    "team_hotfix": {
+      "alias": "Teamhotfix",
+      "status": "Connected",
+      "connected": true,
+      "username": "kkumar@aptimized.com.prod.teamhotfix",
+      "instance_url": "https://allianceortho--teamhotfix.sandbox.my.salesforce.com",
+      "org_id": "00DiW0000005VmLUAU",
+      "is_sandbox": true,
+      "api_usage_percent": 0.0,
+      "error": null
+    }
+  },
+  "tier1_realtime_failures": {
+    "status": "WARNING",
+    "batch_errors": [],
+    "flow_execution_errors": [],
+    "paused_flow_interviews": 0,
+    "cron_trigger_blocked_jobs": 8,
+    "unexpected_exceptions_count": 0
+  },
+  "tier2_integration_attribution": {
+    "status": "NOMINAL",
+    "bulk_api_active_jobs": 1,
+    "bulk_api_failed_records": 0,
+    "top_api_consumers": [
+      {
+        "app": "MuleSoft_Integration",
+        "usage_pct": 12.1
+      },
+      {
+        "app": "Snowflake_Replication",
+        "usage_pct": 8.4
+      }
+    ],
+    "certificate_expiry_warnings": [],
+    "oauth_token_status": "VALID",
+    "snowflake_reconciliation": {
+      "status": "SYNCHRONIZED",
+      "salesforce_row_count": 1420500,
+      "snowflake_row_count": 1420500,
+      "max_system_modstamp_lag_sec": 42
+    }
+  },
+  "tier3_governance_change": {
+    "status": "NOMINAL",
+    "direct_prod_audit_events": 0,
+    "metadata_drift_detected": false,
+    "apex_code_coverage_pct": 84.6,
+    "code_coverage_status": "PASS",
+    "failed_test_classes_count": 0,
+    "stale_sandboxes_count": 0
+  },
+  "tier4_platform_hygiene": {
+    "status": "NOMINAL",
+    "active_ui_sessions": 1,
+    "data_storage_pct": 39.3,
+    "file_storage_pct": 53.1,
+    "field_null_rate_probes": {
+      "encounter_needs_routing_pct": 0.05,
+      "claim_amount_null_pct": 0.0
+    },
+    "queue_sla_breaches": 0,
+    "salesforce_trust_status": "AVAILABLE"
+  },
+  "engineering_corrections": {
+    "async_apex_delta_velocity": {
+      "status": "OPTIMAL",
+      "jobs_per_min": 14.2
+    },
+    "flex_queue_depth": 0,
+    "cdc_entity_filtering": "ACTIVE",
+    "child_parent_cache_hit_rate": 94.8,
+    "report_export_events_count": 1,
+    "email_bounce_rate_pct": 318.8,
+    "auth_session_delta_polling": "INDEXED"
+  },
+  "batches": {
+    "YesterdayDenialSyncBatch": {
+      "name": "YesterdayDenialSyncBatch",
+      "status": "Completed",
+      "completed_time": "02:00 AM",
+      "errors": 0,
+      "total_processed": 1000,
+      "total_batches": 1,
+      "failed_batches": 0,
+      "extended_status": null,
+      "id": null
+    },
+    "UpdateEncounterOwnerAndRoutingBatch": {
+      "name": "UpdateEncounterOwnerAndRoutingBatch",
+      "status": "Completed",
+      "completed_time": "02:00 AM",
+      "errors": 0,
+      "total_processed": 1000,
+      "total_batches": 1,
+      "failed_batches": 0,
+      "extended_status": null,
+      "id": null
+    },
+    "EncounterMemberIdBatch": {
+      "name": "EncounterMemberIdBatch",
+      "status": "Queued",
+      "completed_time": "Recent",
+      "errors": 0,
+      "total_processed": 0,
+      "total_batches": 50,
+      "failed_batches": 0,
+      "extended_status": null,
+      "id": "707UP00002oFYVCYA4"
+    }
+  },
+  "batch_list": [
+    {
+      "name": "YesterdayDenialSyncBatch",
+      "status": "Completed",
+      "completed_time": "02:00 AM",
+      "errors": 0,
+      "total_processed": 1000,
+      "total_batches": 1,
+      "failed_batches": 0,
+      "extended_status": null,
+      "id": null
+    },
+    {
+      "name": "UpdateEncounterOwnerAndRoutingBatch",
+      "status": "Completed",
+      "completed_time": "02:00 AM",
+      "errors": 0,
+      "total_processed": 1000,
+      "total_batches": 1,
+      "failed_batches": 0,
+      "extended_status": null,
+      "id": null
+    },
+    {
+      "name": "EncounterMemberIdBatch",
+      "status": "Queued",
+      "completed_time": "Recent",
+      "errors": 0,
+      "total_processed": 0,
+      "total_batches": 50,
+      "failed_batches": 0,
+      "extended_status": null,
+      "id": "707UP00002oFYVCYA4"
+    }
+  ],
+  "metrics": {
+    "stranded_encounters": 0,
+    "daily_denials": 4014,
+    "yesterday_denial_claim_amount": 11716787.07,
+    "yesterday_denial_charge_amount": 4596402.06,
+    "today_denial_claim_amount": 22638098.0,
+    "today_charge_amount": 5869441.0,
+    "critical_conflicts": 0,
+    "warning_conflicts": 0
+  },
+  "revenue": {
+    "status": "nominal",
+    "amount": 22638098.0,
+    "formatted": "$22,638,098",
+    "daily_target_pct": 103.4
+  },
+  "radar_summary": {
+    "total_conflicts": 0,
+    "critical_count": 0,
+    "warning_count": 0,
+    "is_clean": true
+  },
+  "governor_limits": {
+    "daily_api_requests_max": 361000,
+    "daily_api_requests_remaining": 262263,
+    "daily_api_requests_used": 98737,
+    "daily_api_requests_pct": 27.4,
+    "daily_async_apex_max": 341000,
+    "daily_async_apex_remaining": 173618,
+    "daily_async_apex_used": 167382,
+    "daily_async_apex_headroom_pct": 50.9,
+    "data_storage_pct": 39.3,
+    "file_storage_pct": 53.1,
+    "apex_cpu_usage_pct": 22.0,
+    "soql_query_usage_pct": 14.0
+  },
+  "state": "WARNING",
+  "batch_apex_errors": [],
+  "cron_triggers": {
+    "total_jobs": 10,
+    "missed_runs": 8,
+    "all_nominal": false,
+    "next_fire_time": null,
+    "jobs": [
+      {
+        "job_name": "Create_Email_Delay_a04UP00000AuAoXYAV_1791916955275",
+        "status": "DELETED",
+        "next_fire_time": null,
+        "previous_fire_time": "2026-10-13T18:52:00.154+0000"
+      },
+      {
+        "job_name": "Create_Email_Delay_a04UP00000AuBELYA3_1791917753304",
+        "status": "DELETED",
+        "next_fire_time": null,
+        "previous_fire_time": "2026-10-13T19:05:00.398+0000"
+      },
+      {
+        "job_name": "Create_Email_Delay_a04UP00000Au3OrYAJ_1791905935862",
+        "status": "DELETED",
+        "next_fire_time": null,
+        "previous_fire_time": "2026-10-13T15:48:00.022+0000"
+      },
+      {
+        "job_name": "Create_Email_Delay_a04UP00000Au4pZYAR_1791908739986",
+        "status": "DELETED",
+        "next_fire_time": null,
+        "previous_fire_time": "2026-10-13T16:35:05.719+0000"
+      },
+      {
+        "job_name": "Create_Email_Delay_a04UP00000Atuv3YAB_1791894127792",
+        "status": "DELETED",
+        "next_fire_time": null,
+        "previous_fire_time": "2026-10-13T12:32:00.030+0000"
+      },
+      {
+        "job_name": "Create_Email_Delay_a04UP00000Au5IcYAJ_1791910030418",
+        "status": "DELETED",
+        "next_fire_time": null,
+        "previous_fire_time": "2026-10-13T16:57:00.697+0000"
+      },
+      {
+        "job_name": "Create_Email_Delay_a04UP00000AtvCnYAJ_1791896784279",
+        "status": "DELETED",
+        "next_fire_time": null,
+        "previous_fire_time": "2026-10-13T13:16:00.050+0000"
+      },
+      {
+        "job_name": "Create_Email_Delay_a04UP00000Au3blYAB_1791906367172",
+        "status": "DELETED",
+        "next_fire_time": null,
+        "previous_fire_time": "2026-10-13T15:56:00.105+0000"
+      },
+      {
+        "job_name": "Create_Email_Delay_a04UP00000Atv6LYAR_1791896221547",
+        "status": "DELETED",
+        "next_fire_time": null,
+        "previous_fire_time": "2026-10-13T13:07:00.025+0000"
+      },
+      {
+        "job_name": "Create_Email_Delay_a04UP00000Au8DFYAZ_1791912409049",
+        "status": "DELETED",
+        "next_fire_time": null,
+        "previous_fire_time": "2026-10-13T17:36:00.041+0000"
+      }
+    ]
+  },
+  "setup_audit_trail": {
+    "unapproved_prod_changes": 0,
+    "critical_changes_count": 0,
+    "is_clean": true,
+    "changes": []
+  },
+  "integration": {
+    "bulk_api_v2_records": 150000,
+    "bulk_api_v2_jobs": 4,
+    "snowflake_reconciliation_pct": 100.0,
+    "snowflake_dropped_records": 0,
+    "reconciliation_status": "ALIGNED"
+  },
+  "certificates": [
+    {
+      "name": "TeamHotfix_OAuth_Token",
+      "org": "TeamHotfix",
+      "days_until_expiration": 90,
+      "status": "NOMINAL",
+      "error": null
+    }
+  ],
+  "code_coverage": {
+    "org_wide_coverage_pct": 84.6,
+    "status": "healthy",
+    "target_pct": 75.0
+  }
+}

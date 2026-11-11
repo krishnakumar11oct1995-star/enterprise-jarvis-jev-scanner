@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core">
+    <flow name="OrderSyncFlow">
+        <http:listener path="/api/v1/orders" config-ref="HTTP_Listener"/>
+        <salesforce:query config-ref="SF_Config">SELECT Tax_Amount__c FROM Order</salesforce:query>
+        <snowflake:bulk-insert config-ref="Snowflake_Config" table="ORDER_ANALYTICS"/>
+    </flow>
+</mule>
